@@ -10,6 +10,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  base: '/vue-java-pinia/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
