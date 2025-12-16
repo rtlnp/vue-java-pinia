@@ -1,11 +1,11 @@
 <template>
     <h2>登录页面</h2>
-    <form @submit.prevent="handleLogin">
+    <form @submit.prevent="FormSubmit">
         <p>用户名</p>
         <input 
             type="text"
             name="username"
-            :="username"
+            v-model="username"
             placeholder="输入用户名"
             required
         >
@@ -13,7 +13,7 @@
         <input 
             type="password" 
             name="password" 
-            :="password"
+            v-model="password"
             placeholder="密码长度6~15位"
             required
             minlength="6"
@@ -36,7 +36,18 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const username = ref('');
+const password = ref('');
+const verifyCode = ref('');
+
+const router = useRouter();
+
+const FormSubmit = () => {
+    router.push('/role');
+}
 </script>
 
 <style scoped>

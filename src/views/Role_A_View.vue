@@ -1,15 +1,12 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <router-link :to="{name: 'role'}">返回选择页</router-link>
+  <rolea/>
 </template>
 
+<script setup>
+import rolea from '../components/Role_A_Come.vue'
+</script>
+
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
+
 </style>

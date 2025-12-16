@@ -1,7 +1,7 @@
 <template>
-    <h2>要创建还是回答？</h2>
-    <RouterLink :to="{name: 'rolea'}"><img src="" alt="创建者"></RouterLink>
-    <RouterLink :to="{name: 'roleb'}"><img src="" alt="回答者"></RouterLink>
+    <h2>创建 OR 回答？</h2>
+    <RouterLink :to="{name: 'rolea'}">创建</RouterLink>
+    <RouterLink :to="{name: 'roleb'}">回答</RouterLink>
 </template>
 
 <script setup>

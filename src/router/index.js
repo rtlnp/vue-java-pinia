@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Role from '../views/RoleView.vue'
 import RoleB from '../views/Role_B_View.vue'
+import RoleA from '../views/Role_A_View.vue'
 import login from '../views/LoginView.vue'
 
 const router = createRouter({
@@ -7,22 +9,29 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      redirect: '/login'
+    },
+    {
+      path: '/login',
       name: 'login',
-      redirect: login,
+      component: login
+    },
+    {
+      path: '/role',
+      name: 'role',
+      component: Role,
+    },
+    {
+      path: '/rolea',
+      name: 'rolea',
+      component: RoleA,
     },
     {
       path: '/roleb',
       name: 'roleb',
       component: RoleB,
     },
-    {
-      path: '/rolea',
-      name: 'rolea',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Role_A_View.vue'),
-    },
+    
   ],
 })
 
