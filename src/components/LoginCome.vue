@@ -19,10 +19,10 @@
                     type="password" 
                     name="password" 
                     v-model="password"
-                    placeholder="密码长度6~15位"
+                    placeholder="密码长度5~10位"
                     required
-                    minlength="6"
-                    maxlength="15"
+                    minlength="5"
+                    maxlength="10"
                     class="form-input"
                 >
             </div>
@@ -39,7 +39,8 @@
                         maxlength="4"
                         class="form-input code-input"
                     >
-                    <button type="button" class="code-btn">获取验证码</button>
+                    <span v-if="codeBool">{{ code }}</span>
+                    <button type="button" @click="CodeButton" class="code-btn">获取验证码</button>
                 </div>
             </div>
             <button type="submit" class="login-btn">登录</button>
@@ -82,17 +83,62 @@
 </template>
 
 <script setup>
+import request from '@/utils/request';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const username = ref('');
 const password = ref('');
 const verifyCode = ref('');
+const codeBool = ref(false);
+const code = ref();
 
 const router = useRouter();
 
-const FormSubmit = () => {
-    router.push('/role');
+const CodeButton = async () => {
+    try {
+        const res = await request.get('/user/code');
+
+        code.value = res.data;
+        codeBool.value = true;
+    } catch (error) {
+        console.error('登录请求失败：',error);
+        alert('服务器没了喵');
+    }
+}
+
+const FormSubmit = async () => {
+    try {
+        const res = await request.post('/user/out', verifyCode.value);
+
+        if (!res.data) {
+            alert('验证码错误');
+            return;
+        }
+
+    } catch (error) {
+        console.error('登录请求失败：',error);
+        alert('服务器没了喵');
+    }
+
+    const form = {
+        username: username.value,
+        password: password.value
+    }
+
+    try {
+        const res = await request.post('/user/get', form);
+
+        if (res.data) {
+            router.push('/role');
+        }
+        else {
+            alert('用户名或密码错误');
+        }
+    } catch (error) {
+        console.error('登录请求失败：',error);
+        alert('服务器没了喵');
+    }
 }
 </script>
 
@@ -184,6 +230,26 @@ const FormSubmit = () => {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+/* 验证码显示区域样式（仅新增，不修改原有样式） */
+.code-wrap span {
+  /* 与输入框/按钮同高，视觉对齐 */
+  height: 44px;
+  /* 内容垂直+水平居中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 浅色背景+细边框，区分区域且不刺眼 */
+  background-color: #f0f5ff;
+  border: 1px solid #e5e6eb;
+  border-radius: 8px;
+  /* 内边距，避免文字贴边 */
+  padding: 0 12px;
+  /* 字体样式：清晰易读 */
+  font-size: 14px;
+  color: #1d2129;
+  letter-spacing: 2px; /* 字母间距拉开，验证码更易识别 */
+  cursor: default; /* 鼠标悬浮不变指针，提示不可点击 */
 }
 
 .code-btn:hover {
