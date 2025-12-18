@@ -1,6 +1,6 @@
 <template>
     <Role />
-    <router-link :to="{name: 'login'}" class="back-link">返回选择页</router-link>
+    <router-link :to="{name: 'login'}" class="back-link">返回登录页</router-link>
 </template>
 
 <script setup>

@@ -15,7 +15,7 @@ import { RouterLink } from 'vue-router';
 <style scoped>
 /* 全局容器：垂直水平居中，背景留白 */
 .role-select-container {
-    min-height:90vh;
+    min-height:85vh;
     background-color: #F5F7FA;
     display: flex;
     flex-direction: column;

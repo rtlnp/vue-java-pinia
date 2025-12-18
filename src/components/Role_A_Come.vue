@@ -1,5 +1,17 @@
 <template>
     <!-- 创建者页面 -->
+<div class="question-container">
+    <h2 class="question-code-title">输入问卷码</h2>
+    <input 
+        type="number"
+        v-model="Id"
+        placeholder="输入6位数字"
+        required
+        min="100000"
+        maxlength="999999"
+        step="1"
+        class="question-code-input"
+    >
     <!-- 创建回答页面 -->
     <div class="question-container">
         <div
@@ -74,6 +86,7 @@
 
         <button @click="FormSubmit" class="submit-btn">提交</button>
     </div>
+</div>
     <!-- 创建者页面 -->
     <!-- 创建回答页面 -->
     <!-- <div
@@ -143,9 +156,14 @@
 </template>
 
 <script setup>
+import request from '@/utils/request';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const pList = ref([]);
+const Id = ref();
+
+const router = useRouter();
 
 const AddNewP = () => {
   const Pid = Date.now();
@@ -197,15 +215,65 @@ const AddSubjectiveBool = (element) => {
     element.type = 'Subjective';
 };
 
-const FormSubmit = () => {
-    console.log("已提交到后端");
+const FormSubmit = async () => {
+    if (!Id.value) {
+        alert("请输入6位问卷码!");
+        return;
+    }
+
+    const idReg = /^\d{6}$/;
+    if (!idReg.test(Id.value)) {
+        alert("问卷码必须是6位纯数字,请重新输入!");
+        return;
+    }
+
+    if (pList.value.length === 0) {
+        alert("请至少添加1道题目!");
+        return;
+    }
+
+    const hasUnspecifiedType = pList.value.some(item => item.type === '');
+    if (hasUnspecifiedType) {
+        alert("有问题没指定回答方式!!!");
+        return;
+    }
+
+    const returnQuestions = pList.value.map(item => {
+        const base = {
+            question: item.text,
+            type: item.type,
+            multiple: item.MultipleOption,
+            single: item.SingleOption
+        }
+        return base;
+    })
+
+    const questions = {
+        id: Id.value,
+        questionList: returnQuestions
+    }
+    
+    try {
+        const res = await request.post('/question/save', questions);
+
+        if (res.data) {
+            alert("保存成功");
+            router.push('/role');
+        }
+
+        else {
+            alert("问卷码重复,请更改问卷码");
+        }
+    } catch (error) {
+        alert("服务器没了喵")
+    }
 }
 </script>
 
 <style scoped>
 /* 全局容器：居中+留白 */
 .question-container {
-    min-height: 90vh;
+    min-height: 80vh;
     background-color: #F8F9FA;
     padding: 40px 20px;
     box-sizing: border-box;
@@ -391,6 +459,45 @@ const FormSubmit = () => {
 .submit-btn:hover {
     background-color: #1890FF;
     box-shadow: 0 4px 12px rgba(64, 150, 255, 0.15);
+}
+
+.question-code-title {
+    font-size: 18px;
+    color: #333333;
+    font-weight: 500;
+    margin-bottom: 16px;
+    line-height: 1.5; /* 优化文字垂直居中 */
+}
+
+/* 问卷码输入框：复用问题输入框样式，与题目区域分隔32px */
+.question-code-input {
+    width: 100%;
+    height: 44px; /* 与 .question-input 高度一致 */
+    padding: 0 16px; /* 左右内边距匹配 */
+    border: 1px solid #E5E6EB;
+    border-radius: 6px; /* 统一圆角 */
+    font-size: 14px;
+    color: #333333;
+    box-sizing: border-box; /* 防止宽度溢出 */
+    transition: border-color 0.3s; /* 平滑过渡 */
+    margin-bottom: 32px; /* 与下方题目区域明确分隔 */
+}
+
+/* 输入框聚焦效果：与现有输入框完全一致 */
+.question-code-input:focus {
+    outline: none;
+    border-color: #4096FF; /* 主色高亮 */
+}
+
+/* 输入框占位符样式：统一灰色（避免浏览器默认样式差异） */
+.question-code-input::placeholder {
+    color: #999999;
+    font-size: 14px;
+}
+
+/* 题目列表外层容器：优化与「添加题目按钮」的间距（可选，原有样式可复用） */
+.question-item-list {
+    margin-bottom: 20px;
 }
 
 /* 响应式适配：小屏幕优化 */

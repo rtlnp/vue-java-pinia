@@ -3,6 +3,7 @@ import Role from '../views/RoleView.vue'
 import RoleB from '../views/Role_B_View.vue'
 import RoleA from '../views/Role_A_View.vue'
 import login from '../views/LoginView.vue'
+import RenderingView from '../views/QuestionRenderingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +32,11 @@ const router = createRouter({
       name: 'roleb',
       component: RoleB,
     },
-    
+    {
+      path: '/rend',
+      name: 'rend',
+      component: RenderingView,
+    },
   ],
 })
 
